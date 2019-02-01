@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -7,6 +8,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security.Provider;
 using ToDoApp.Models;
 
 namespace ToDoApp.Controllers
@@ -17,6 +19,21 @@ namespace ToDoApp.Controllers
         {
             string currentUserId = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.FirstOrDefault(x => x.Id == currentUserId);
+
+            IEnumerable<ToDoItem> toDoList = db.ToDoList.ToList().Where(x => x.User == currentUser);
+
+            int completeCount = 0;
+
+            foreach (var toDoItem in toDoList)
+            {
+                if (toDoItem.IsDone)
+                {
+                    completeCount++;
+                }
+            }
+
+            ViewBag.Percent = Math.Round(100f * ((float)completeCount / (float)toDoList.Count()));
+
             return db.ToDoList.ToList().Where(x => x.User == currentUser);
         }
 
@@ -28,6 +45,7 @@ namespace ToDoApp.Controllers
 
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        [Authorize]
         public ActionResult Index()
         {
             return View();
@@ -39,11 +57,22 @@ namespace ToDoApp.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             ToDoItem toDoItem = db.ToDoList.Find(id);
+            
             if (toDoItem == null)
             {
                 return HttpNotFound();
             }
+
+            string currentUserId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.FirstOrDefault(x => x.Id == currentUserId);
+
+            if (toDoItem.User != currentUser)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             return View(toDoItem);
         }
 
@@ -93,25 +122,57 @@ namespace ToDoApp.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+
             ToDoItem toDoItem = db.ToDoList.Find(id);
+
             if (toDoItem == null)
             {
                 return HttpNotFound();
             }
+
+            string currentUserId = User.Identity.GetUserId();
+            ApplicationUser currentUser = db.Users.FirstOrDefault(x => x.Id == currentUserId);
+
+            if (toDoItem.User != currentUser)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+
             return View(toDoItem);
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Edit([Bind(Include = "Id,Description,IsDone")] ToDoItem toDoItem)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Entry(toDoItem).State = EntityState.Modified;
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
+        //    return View(toDoItem);
+        //}
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Description,IsDone")] ToDoItem toDoItem)
+        public ActionResult AJAXEdit(int? id, bool value)
         {
-            if (ModelState.IsValid)
+            if (id == null)
             {
-                db.Entry(toDoItem).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            return View(toDoItem);
+
+            ToDoItem toDoItem = db.ToDoList.Find(id);
+
+            if (toDoItem == null)
+            {
+                return HttpNotFound();
+            }
+
+            toDoItem.IsDone = value;
+            db.Entry(toDoItem).State = EntityState.Modified;
+            db.SaveChanges();
+            return PartialView("_ToDoTable", GetToDoList());
         }
 
         public ActionResult Delete(int? id)
