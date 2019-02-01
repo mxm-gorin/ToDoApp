@@ -2,8 +2,7 @@
 
 <div id="progressBarToDo">
     <div class="progress">
-        <div class="progress-bar" role="progressbar"
-             style="width:@ViewBag.Percent%;">@ViewBag.Percent%</div>
+        <div class="progress-bar" role="progressbar" style="width: @ViewBag.Percent%;">@ViewBag.Percent%</div>
     </div>
 </div>
 
@@ -11,6 +10,9 @@
     @foreach (var item in Model)
     {
         <tr>
+            <td>
+                @Html.CheckBoxFor(modelItem => item.IsDone, new { id = item.Id, @class = "activeCheck" })
+            </td>
             <td>
                 @if (!item.IsDone)
                 {
@@ -21,9 +23,7 @@
                     <div class="completedToDoItem">@Html.DisplayFor(modelItem => item.Description)</div>
                 }
             </td>
-            <td>
-                @Html.CheckBoxFor(modelItem => item.IsDone, new { id = item.Id, @class ="activeCheck" })
-            </td>
+
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.Id })

@@ -252,9 +252,7 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\ToDoList\Create.cshtml" />
     <Content Include="Views\ToDoList\Delete.cshtml" />
-    <Content Include="Views\ToDoList\Details.cshtml" />
     <Content Include="Views\ToDoList\Edit.cshtml" />
     <Content Include="Views\ToDoList\Index.cshtml" />
     <Content Include="Views\ToDoList\_ToDoTable.cshtml" />

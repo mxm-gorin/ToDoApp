@@ -50,55 +50,7 @@ namespace ToDoApp.Controllers
         {
             return View();
         }
-
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            ToDoItem toDoItem = db.ToDoList.Find(id);
-            
-            if (toDoItem == null)
-            {
-                return HttpNotFound();
-            }
-
-            string currentUserId = User.Identity.GetUserId();
-            ApplicationUser currentUser = db.Users.FirstOrDefault(x => x.Id == currentUserId);
-
-            if (toDoItem.User != currentUser)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-
-            return View(toDoItem);
-        }
-
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Description")] ToDoItem toDoItem)
-        {
-            if (ModelState.IsValid)
-            {
-                string currentUserId = User.Identity.GetUserId();
-                ApplicationUser currentUser = db.Users.FirstOrDefault(x => x.Id == currentUserId);
-                toDoItem.User = currentUser;
-                toDoItem.IsDone = false;
-                db.ToDoList.Add(toDoItem);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(toDoItem);
-        }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AJAXCreate([Bind(Include = "Id,Description")] ToDoItem toDoItem)
@@ -118,41 +70,32 @@ namespace ToDoApp.Controllers
 
         public ActionResult Edit(int? id)
         {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            if (id == null) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             ToDoItem toDoItem = db.ToDoList.Find(id);
 
-            if (toDoItem == null)
-            {
-                return HttpNotFound();
-            }
+            if (toDoItem == null) return HttpNotFound();
 
             string currentUserId = User.Identity.GetUserId();
             ApplicationUser currentUser = db.Users.FirstOrDefault(x => x.Id == currentUserId);
 
-            if (toDoItem.User != currentUser)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
+            if (toDoItem.User != currentUser) return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
 
             return View(toDoItem);
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Edit([Bind(Include = "Id,Description,IsDone")] ToDoItem toDoItem)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Entry(toDoItem).State = EntityState.Modified;
-        //        db.SaveChanges();
-        //        return RedirectToAction("Index");
-        //    }
-        //    return View(toDoItem);
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit([Bind(Include = "Id,Description,IsDone")] ToDoItem toDoItem)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(toDoItem).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            return View(toDoItem);
+        }
 
         [HttpPost]
         public ActionResult AJAXEdit(int? id, bool value)
