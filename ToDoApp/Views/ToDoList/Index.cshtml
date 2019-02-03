@@ -1,10 +1,10 @@
 ﻿@model ToDoApp.Models.ToDoItem
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "My Todo List";
 }
 
-<h2>My ToDo List</h2>
+<h2>My Todo List</h2>
 
 <div id="tableDiv"></div>
 
@@ -19,8 +19,8 @@
         <div>
             @Html.AntiForgeryToken()
             <div>
-                @Html.Editor("Description")
-                <input type="submit" value="Add" class="btn btn-default" />
+                @Html.EditorFor(model => model.Description, new { htmlAttributes = new {maxlength = "85"} })
+                <input type="submit" value="Add" class="btn btn-default"/>
             </div>
         </div>
 

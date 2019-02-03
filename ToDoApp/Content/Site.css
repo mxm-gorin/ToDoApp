@@ -25,4 +25,5 @@ textarea {
 
 .completedToDoItem {
     text-decoration: line-through;
+    color: gray;
 }

@@ -23,7 +23,6 @@
                     <div class="completedToDoItem">@Html.DisplayFor(modelItem => item.Description)</div>
                 }
             </td>
-
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
                 @Html.ActionLink("Delete", "Delete", new { id = item.Id })
@@ -32,5 +31,5 @@
     }
 
 </table>
-
 <script src="~/Scripts/addCheckBoxListener.js"></script>
+<noscript>

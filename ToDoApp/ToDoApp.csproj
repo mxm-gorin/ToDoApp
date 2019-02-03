@@ -204,6 +204,7 @@
     <Content Include="Scripts\addCheckBoxListener.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\CustomProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\buildToDoTable.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
