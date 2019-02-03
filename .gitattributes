@@ -3,7 +3,7 @@
 ###############################################################################
 * text=auto
 
-*.js linguist-vendored=false
+*.rb linguist-language=C#
 ###############################################################################
 # Set default behavior for command prompt diff.
 #
